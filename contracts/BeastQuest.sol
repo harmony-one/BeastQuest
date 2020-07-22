@@ -3,7 +3,7 @@ pragma solidity >=0.4.21 <0.6.0;
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/token/ERC721/ERC721.sol";
 
-contract BreastQuest is ERC721 {
+contract BeastQuest is ERC721 {
 
     /*** EVENTS ***/
 
@@ -28,8 +28,8 @@ contract BreastQuest is ERC721 {
     /*** CONSTANTS ***/
 
     /// @notice Name and symbol of the non fungible token, as defined in ERC721.
-    string public constant NAME = "BreastQuest";
-    string public constant SYMBOL = "BreastQuest";
+    string public constant NAME = "BeastQuestUltimateHeroes";
+    string public constant SYMBOL = "BQUH";
 
     uint256 private startingPrice = 100000000000000000000; // 100 ONEs
     uint256 private constant PROMO_CREATION_LIMIT = 5000;
