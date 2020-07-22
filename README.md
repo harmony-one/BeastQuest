@@ -1,5 +1,5 @@
-# soccerplayer.app
-A soccer player crypto game ported to [Harmony](http://harmony.one) blockchain
+# BeastQuest
+BeastQuest game ported to [Harmony](http://harmony.one) blockchain
 
 ## Install instructions
 
@@ -14,7 +14,7 @@ A soccer player crypto game ported to [Harmony](http://harmony.one) blockchain
 * Fetch repo 
 
 ```
-git clone https://github.com/gupadhyaya/soccerplayers.git
+git clone https://github.com/harmony-one/BeastQuest.git
 ```
 
 * Install dependencies
@@ -23,13 +23,13 @@ git clone https://github.com/gupadhyaya/soccerplayers.git
 npm install
 ```
 
-* Compile soccer player smart contract
+* Compile BeastQuest smart contract
 
 ```
 truffle compile
 ```
 
-* Deploy soccer player smart contract. You will need a testnet funded account. Fund your harmony one address [here](https://harmony-faucet.ibriz.ai)
+* Deploy BeastQuest smart contract. You will need a testnet funded account. Fund your harmony one address [here](https://harmony-faucet.ibriz.ai)
 
 ```
 truffle migrate --reset --network testnet
@@ -49,7 +49,3 @@ node examples/create.js
 ```
 node examples/purchase.js
 ```
-
-## Disclaimer
-
-This project is sourced from [CryptoSoccerToken](https://etherscan.io/address/0xc95c0910d39d1f6cd3bd71e4b689660c18172b7b#code). We are building it for technology demonstration, and not for commercial purposes.
