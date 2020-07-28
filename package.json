@@ -4,10 +4,13 @@
   "description": "Harmony soccerplayers.app",
   "main": "truffle.js",
   "dependencies": {
+    "@animoca/ethereum-contracts-erc20_base": "^3.0.0",
+    "@animoca/ethereum-contracts-core_library": "^3.1.0",
     "@harmony-js/core": "^0.1.46",
     "dotenv": "^8.1.0",
-    "openzeppelin-solidity": "^2.2.0",
+    "openzeppelin-solidity": "3.1.0",
     "solc": "^0.5.8",
+    "truffle": "^5.1.36",
     "tslib": "^1.10.0"
   }
 }
