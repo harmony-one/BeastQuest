@@ -11,9 +11,11 @@ contract BQSale is FixedSupplyLotSale {
 
     event RunningOutOfSupply(uint256 currentSupply);
 
+    IERC20 public constant payoutTokenAddress = IERC20(0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee);
+
     constructor(
         address payable payoutWallet,
-        IERC20 payoutTokenAddress,
+        // IERC20 payoutTokenAddress,
         uint256 fungibleTokenId,
         address inventoryContract
     )
@@ -44,13 +46,17 @@ contract BQSale is FixedSupplyLotSale {
         _seed = seed;
     }
 
-    function _randomlySelectAndUpdate(uint256 numTokens)
+    function _randomlySelectAndUpdate(uint256 quantity)
         internal
-        returns (uint256[] memory)
+        override
+        returns 
+        (
+            uint256[] memory
+        )
     {
         uint256 supplySize = _nonFungibleSupply.length;
 
-        require(supplySize >= numTokens, "not enough supply");
+        require(supplySize >= quantity, "not enough supply");
         require(_lastUsedSeed != _seed, "seed not updated from last purchase");
 
         _lastUsedSeed = _seed;
@@ -70,14 +76,14 @@ contract BQSale is FixedSupplyLotSale {
             randomizedSupply[newIndex] = tokenId;
         }
 
-        uint256[] memory selected = new uint256[](numTokens);
-        for (uint256 index = 0; index < numTokens; index++) {
+        uint256[] memory selected = new uint256[](quantity);
+        for (uint256 index = 0; index < quantity; index++) {
             selected[index] = randomizedSupply[index];
         }
 
-        uint256[] memory newSupply = new uint256[](supplySize - numTokens);
-        for (uint256 index = numTokens; index < supplySize; index++) {
-            newSupply[index - numTokens] = randomizedSupply[index];
+        uint256[] memory newSupply = new uint256[](supplySize - quantity);
+        for (uint256 index = quantity; index < supplySize; index++) {
+            newSupply[index - quantity] = randomizedSupply[index];
         }
 
         _nonFungibleSupply = newSupply;

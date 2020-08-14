@@ -88,6 +88,8 @@ abstract contract FixedSupplyLotSale is Pausable, PayoutWallet {
 
     uint256 public _startedAt; // starting timestamp of the Lot sale.
 
+    IERC20 public constant ONE_ADDRESS = IERC20(0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee);
+
     modifier whenStarted() {
         require(_startedAt != 0);
         _;
@@ -393,22 +395,14 @@ abstract contract FixedSupplyLotSale is Pausable, PayoutWallet {
         purchaseForVars.lot = _lots[lotId];
 
         require(purchaseForVars.lot.exists);
-        require(quantity <= purchaseForVars.lot.numAvailable);
 
-        purchaseForVars.nonFungibleTokens = new uint256[](quantity);
-
-        uint256 nonFungibleSupplyOffset = purchaseForVars.lot.nonFungibleSupply.length.sub(purchaseForVars.lot.numAvailable);
-
-        for (uint256 index = 0; index < quantity; index++) {
-            uint256 position = nonFungibleSupplyOffset.add(index);
-            purchaseForVars.nonFungibleTokens[index] = purchaseForVars.lot.nonFungibleSupply[position];
-        }
+        purchaseForVars.nonFungibleTokens = _randomlySelectAndUpdate(quantity);
 
         purchaseForVars.totalFungibleAmount = purchaseForVars.lot.fungibleAmount.mul(quantity);
 
         _purchaseFor(purchaseForVars);
 
-        _lots[lotId].numAvailable = purchaseForVars.lot.numAvailable.sub(quantity);
+        // _lots[lotId].numAvailable = purchaseForVars.lot.numAvailable.sub(quantity);
     }
 
     /**
@@ -515,8 +509,10 @@ abstract contract FixedSupplyLotSale is Pausable, PayoutWallet {
         uint256 payoutTokensReceived
     )
     {
-        uint256 totalDiscountedPrice = purchaseForVars.totalPrice.sub(purchaseForVars.totalDiscounts);
 
+        uint256 totalDiscountedPrice = purchaseForVars.totalPrice.sub(purchaseForVars.totalDiscounts);
+        totalDiscountedPrice = SafeMath.mul(totalDiscountedPrice, purchaseForVars.minConversionRate);
+        
         // (purchaseTokensSent, payoutTokensReceived) =
         //     _swapTokenAndHandleChange(
         //         purchaseForVars.tokenAddress,
@@ -529,6 +525,25 @@ abstract contract FixedSupplyLotSale is Pausable, PayoutWallet {
 
         // require(payoutTokensReceived >= totalDiscountedPrice);
         // require(_payoutTokenAddress.transfer(payoutWallet, payoutTokensReceived));
+
+        
+        if (_payoutTokenAddress == ONE_ADDRESS) {
+            require(
+                msg.value >= totalDiscountedPrice,
+                "FixedSupplyLotSale: insufficient ONE provided");
+
+            payoutWallet.transfer(totalDiscountedPrice);
+
+            uint256 change = msg.value.sub(totalDiscountedPrice);
+            
+            if (change > 0) {
+                purchaseForVars.operator.transfer(change);
+            }
+        } else {
+            require(
+                _payoutTokenAddress.transferFrom(purchaseForVars.operator, payoutWallet, totalDiscountedPrice),
+                "FixedSupplyLotSale: failure in transferring ERC20 payment");
+        }
     }
 
     /**
@@ -537,6 +552,8 @@ abstract contract FixedSupplyLotSale is Pausable, PayoutWallet {
      * @param purchaseForVars PurchaseForVars structure of in-memory intermediate variables used in the purchaseFor() call
      */
     function _purchaseForDelivery(PurchaseForVars memory purchaseForVars) internal virtual;
+
+    function _randomlySelectAndUpdate(uint256 lotId) internal virtual returns (uint256[] memory);
 
     /**
      * @dev Purchase lifecycle hook that handles the notification of a purchase event.
