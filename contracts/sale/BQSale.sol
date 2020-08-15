@@ -30,15 +30,28 @@ contract BQSale is FixedSupplyLotSale {
 
     /**
      * @dev Sets or updates the nonFungibleSupply for the sale.
-     * @param nonFungibleSupply supply to be updated.
+     * @param nonFungibleTokens supply to be updated.
      */
-    function updateNonFungibleSupply(uint256[] memory nonFungibleSupply)
+    function updateNonFungibleSupply(uint256[] memory nonFungibleTokens)
         public
         onlyOwner
     // whenNotStarted
     {
-        require(nonFungibleSupply.length > 0);
-        _nonFungibleSupply = nonFungibleSupply;
+        require(nonFungibleTokens.length > 0);
+
+        uint256 newSupplySize = _nonFungibleSupply.length.add(nonFungibleTokens.length);
+        uint256[] memory newNonFungibleSupply = new uint256[](newSupplySize);
+
+        for (uint256 index = 0; index < _nonFungibleSupply.length; index++) {
+            newNonFungibleSupply[index] = _nonFungibleSupply[index];
+        }
+
+        for (uint256 index = 0; index < nonFungibleTokens.length; index++) {
+            uint256 offset = index.add(_nonFungibleSupply.length);
+            newNonFungibleSupply[offset] = nonFungibleTokens[index];
+        }
+
+        _nonFungibleSupply = newNonFungibleSupply;
     }
 
     function setRandomnessSeed(uint256 seed) public onlyOwner // whenNotStarted

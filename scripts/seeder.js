@@ -4,7 +4,7 @@ const { ChainID, ChainType, hexToNumber } = require("@harmony-js/utils");
 const { Messenger, WSProvider } = require("@harmony-js/network");
 const { BN } = require('bn.js');
 const hmy = new Harmony(
-  process.env.LOCALNET,
+  process.env.TESTNET,
   {
     chainType: ChainType.Harmony,
     chainId: ChainID.HmyTestnet,
@@ -19,7 +19,7 @@ let options2 = { gasPrice: 1000000000, gasLimit: 6721900 };
 
 (function () {
   const messenger = new Messenger(
-    new WSProvider(process.env.LOCALNET_WS),
+    new WSProvider(process.env.TESTNET_WS),
     ChainType.Harmony,
     ChainID.HmyTestnet,
   );

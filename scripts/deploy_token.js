@@ -3,7 +3,7 @@ const { Harmony } = require("@harmony-js/core");
 const { ChainID, ChainType, hexToNumber } = require("@harmony-js/utils");
 const { BN } = require('bn.js');
 const hmy = new Harmony(
-    process.env.LOCALNET,
+    process.env.TESTNET,
     {
         chainType: ChainType.Harmony,
         chainId: ChainID.HmyTestnet,

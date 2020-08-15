@@ -3,7 +3,7 @@ const { Harmony, Blockchain } = require("@harmony-js/core");
 const { ChainID, ChainType, hexToNumber } = require("@harmony-js/utils");
 const { Messenger, WSProvider } = require("@harmony-js/network");
 const { BN } = require("bn.js");
-const hmy = new Harmony(process.env.LOCALNET, {
+const hmy = new Harmony(process.env.TESTNET, {
   chainType: ChainType.Harmony,
   chainId: ChainID.HmyTestnet,
 });
@@ -38,7 +38,7 @@ let options2 = { gasPrice: 1000000000, gasLimit: 6721900, value: "0x1B1AE4D6E2EF
   const lotId = 0;
   const quantity = 5;
   const tokenAddress = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee";
-  const maxTokenAmount = 600;
+  const maxTokenAmount = 500;
   const minConversionRate = "0xDE0B6B3A7640000"; // equivalent to 1e+18
   const extData = "0x736f6d65";
 
@@ -54,5 +54,6 @@ let options2 = { gasPrice: 1000000000, gasLimit: 6721900, value: "0x1B1AE4D6E2EF
     )
     .send(options2);
   console.log(res);
+  process.exit(0);
 })();
 // console.log(contract.methods);
