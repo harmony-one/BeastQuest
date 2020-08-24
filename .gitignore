@@ -1,2 +1,4 @@
+.env
+tokenIds.txt
 node_modules/
 build/

@@ -5,12 +5,12 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract BeastQuest is ERC721, Ownable, MinterRole {
-    constructor() 
+    constructor(string memory name, string memory symbol, string memory url) 
     MinterRole() 
-    ERC721("BeastQuest Ultimate Heroes", "BQUH") 
+    ERC721(name, symbol) 
     public
     {
-        _setBaseURI("https://quidd-nft-rinkeby.animocabrands.com/json/");
+        _setBaseURI(url);
     }
 
     function mint(address to, uint256 tokenId) public onlyMinter {

@@ -5,11 +5,12 @@ import "../token/BeastQuest.sol";
 
 contract BQSale is FixedSupplyLotSale {
     uint256[] public _nonFungibleSupply;
+    uint256 public _supplyOffset;
     uint256 public _seed;
     uint256 public _lastUsedSeed;
     uint256 public constant _MIN_SUPPLY = 50;
 
-    event RunningOutOfSupply(uint256 currentSupply);
+    event RunningOutOfSupply(uint256 currentSupply, uint256 supplyOffset);
 
     IERC20 public constant payoutTokenAddress = IERC20(0x00eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee);
 
@@ -32,7 +33,7 @@ contract BQSale is FixedSupplyLotSale {
      * @dev Sets or updates the nonFungibleSupply for the sale.
      * @param nonFungibleTokens supply to be updated.
      */
-    function updateNonFungibleSupply(uint256[] memory nonFungibleTokens)
+    function updateNonFungibleSupply(uint256[] memory nonFungibleTokens, uint256 supplyOffset)
         public
         onlyOwner
     // whenNotStarted
@@ -52,6 +53,7 @@ contract BQSale is FixedSupplyLotSale {
         }
 
         _nonFungibleSupply = newNonFungibleSupply;
+        _supplyOffset = supplyOffset;
     }
 
     function setRandomnessSeed(uint256 seed) public onlyOwner // whenNotStarted
@@ -102,7 +104,7 @@ contract BQSale is FixedSupplyLotSale {
         _nonFungibleSupply = newSupply;
 
         if (_nonFungibleSupply.length < _MIN_SUPPLY) {
-            emit RunningOutOfSupply(_nonFungibleSupply.length);
+            emit RunningOutOfSupply(_nonFungibleSupply.length, _supplyOffset);
         }
 
         return selected;

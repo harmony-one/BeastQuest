@@ -15,8 +15,10 @@ let contract = hmy.contracts.createContract(contractJson.abi);
 contract.wallet.addByPrivateKey(process.env.PRIVATE_KEY);
 
 let options2 = { gasPrice: 1000000000, gasLimit: 6721900 };
-
-let options3 = { data: contractJson.bytecode };
+const name = "BeastQuest Ultimate Heroes";
+const symbol = "BQUH";
+const baseUrl = "https://quidd-nft-rinkeby.animocabrands.com/json/";
+let options3 = { data: contractJson.bytecode, arguments: [name, symbol, baseUrl] };
 
 contract.methods
     .contractConstructor(options3)
