@@ -1,5 +1,8 @@
 require("dotenv").config();
 const fs = require("fs");
+const aws = require("aws-sdk");
+const prompt = require("prompt-sync")();
+
 const { Harmony, Blockchain } = require("@harmony-js/core");
 const { ChainID, ChainType, hexToNumber } = require("@harmony-js/utils");
 const { Messenger, WSProvider } = require("@harmony-js/network");
@@ -11,7 +14,24 @@ const hmy = new Harmony(process.env.TESTNET, {
 
 const contractJson = require("../build/contracts/BQSale.json");
 let contract = hmy.contracts.createContract(contractJson.abi, process.env.SALE);
-contract.wallet.addByPrivateKey(process.env.PRIVATE_KEY);
+
+new aws.KMS({
+  accessKeyId: prompt("enter your aws accessKeyId: "),
+  secretAccessKey: prompt("enter your aws secretAccessKey: "),
+  region: prompt("enter your aws region: "),
+}).decrypt(
+  {
+    CiphertextBlob: fs.readFileSync("./encrypted-secret"),
+  },
+  function(err, data) {
+    if (!err) {
+      const decryptedScret = data["Plaintext"].toString();
+      contract.wallet.addByPrivateKey(decryptedScret);
+      startSeeder();
+    }
+  }
+);
+
 let options1 = { gasPrice: 1000000000, gasLimit: 15000000 };
 let options2 = { gasPrice: 1000000000, gasLimit: 6721900 };
 
@@ -43,7 +63,6 @@ async function startSeeder() {
     })
     .on("error", console.error);
 }
-startSeeder();
 
 var tokenIds = fs
   .readFileSync("./tokenIds.txt")
